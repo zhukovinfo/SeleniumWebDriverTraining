@@ -37,6 +37,16 @@ public class BaseTests {
         .isEqualTo(1);
   }
 
+  @Test
+  public void checkStickers() {
+    webDriver.findElement(By.xpath("//*[@title='Catalog']")).click();
+    webDriver.findElements(By.xpath("//*[@class='product column shadow hover-light']"))
+        .forEach(product ->
+            assertThat(product.findElements(By.xpath(".//div[contains(@class,'sticker')]")).size())
+                .describedAs("Проверка, что у товара только один стикер")
+                .isEqualTo(1));
+  }
+
   @DataProvider(name = "menuItemsData")
   public static Object[] mainMenuItemsTexts() {
     return new Object[]{"Appearence", "Catalog", "Countries", "Currencies", "Customers", "Geo Zones", "Languages",

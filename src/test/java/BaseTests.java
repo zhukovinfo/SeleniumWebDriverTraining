@@ -2,6 +2,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 
 import java.util.List;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -30,35 +31,46 @@ public class BaseTests {
     webDriver.findElement(By.name("login")).click();
   }
 
-  @Test(enabled = false)
+  @Test
   public void adminMenuItemsTest() {
-    By byName = By.className("name");
-    List<WebElement> parentMenuItems = webDriver.findElements(byName);
-    int parentMenuItemsCount = parentMenuItems.size();
-    for (int i = 0; i < parentMenuItemsCount; i++) {
-      //find elements again to avoid "the element with the reference {guid} is stale" error
-      WebElement parentMenuItem = webDriver.findElements(byName).get(i);
-      int childrenCount = parentMenuItem.findElements(byName).size();
-      parentMenuItem.click();
+    List<WebElement> parents = webDriver.findElements(By.id("app-"));
+    for (int i = 0; i < parents.size(); i++) {
+      webDriver.findElements(By.id("app-")).get(i).click();
+      WebElement parent = webDriver.findElements(By.id("app-")).get(i);
       assertHeaderExists();
 
-      if (childrenCount > 0) {
-        for (int j = 0; j < childrenCount; j++) {
-          webDriver.findElements(byName).get(i).findElements(byName).get(j).click();
+      if (isChildrenListPresent(parent)) {
+        List<WebElement> children = parent.findElement(By.className("docs")).findElements(By.className("name"));
+
+        for (int j = 0; j < children.size(); j++) {
+          parent.findElement(By.className("docs")).findElements(By.className("name")).get(j).click();
+          //find parent element again to avoid "the element with the reference {guid} is stale" error
+          parent = webDriver.findElements(By.id("app-")).get(i);
           assertHeaderExists();
         }
+
       }
+
     }
   }
 
-  @Test
+  @Test()
   public void checkStickersTest() {
     webDriver.findElement(By.xpath("//*[@title='Catalog']")).click();
-    webDriver.findElements(By.xpath("//*[@class='image-wrapper']"))
+    webDriver.findElements(By.xpath("//li[contains(@class,'product')]"))
         .forEach(product ->
             assertThat(product.findElements(By.xpath(".//div[contains(@class,'sticker')]")).size())
                 .describedAs("Проверка, что у товара только один стикер")
                 .isEqualTo(1));
+  }
+
+  boolean isChildrenListPresent(WebElement parent) {
+    try {
+      parent.findElement(By.className("docs"));
+      return true;
+    } catch (NoSuchElementException ex) {
+      return false;
+    }
   }
 
   private void assertHeaderExists() {
@@ -70,6 +82,6 @@ public class BaseTests {
   @AfterSuite(alwaysRun = true)
   public void tearDown() {
     webDriver.get("http://localhost/litecart/admin/logout.php");
-    webDriver.quit();
+    webDriver.close();
   }
 }

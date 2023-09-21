@@ -1,4 +1,4 @@
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import org.openqa.selenium.By;
@@ -6,7 +6,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.Test;
 
-public class SearchElementsTests extends BaseTests {
+public class SearchElementsTests extends BaseTest {
 
 
   @Test

@@ -1,13 +1,11 @@
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import org.assertj.core.api.SoftAssertions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.Test;
 
-public class CountriesSortingTests extends BaseTests {
+public class CountriesSortingTests extends BaseTest {
 
   private WebElement table;
 
@@ -17,7 +15,7 @@ public class CountriesSortingTests extends BaseTests {
 
     table = webDriver.findElement(By.className("dataTable"));
     List<WebElement> rows = table.findElements(By.className("row"));
-    int columnNameId = getColumnIdByName("Name");
+    int columnNameId = getColumnIdByName(table, "Name");
 
     List<String> names = rows.stream()
         .map(row -> row.findElements(By.tagName("td")).get(columnNameId).getText())
@@ -30,7 +28,7 @@ public class CountriesSortingTests extends BaseTests {
               .sorted()
               .collect(Collectors.toList()));
 
-      int columnZoneId = getColumnIdByName("Zones");
+      int columnZoneId = getColumnIdByName(table, "Zones");
 
       for (int i = 0; i < rows.size(); i++) {
         WebElement row = table.findElements(By.className("row")).get(i);
@@ -48,12 +46,11 @@ public class CountriesSortingTests extends BaseTests {
   private void verifyZones(SoftAssertions softAssertions) {
     table = webDriver.findElement(By.id("table-zones"));
     List<WebElement> rows = table.findElements(By.tagName("tr"));
-    int columnNameId = getColumnIdByName("Name");
+    int columnNameId = getColumnIdByName(table, "Name");
 
     List<String> names = rows.stream()
         .filter(row -> row.findElements(By.tagName("td")).size() > 0) //exclude header row
         .map(row -> row.findElements(By.tagName("td")).get(columnNameId).getText())
-        .limit(rows.size() - 1)
         .collect(Collectors.toList());
 
     names = names.stream()
@@ -67,13 +64,5 @@ public class CountriesSortingTests extends BaseTests {
             .collect(Collectors.toList()));
   }
 
-  private int getColumnIdByName(String columnName) {
-    List<WebElement> headers = table.findElement(By.className("header")).findElements(By.tagName("th"));
-    return IntStream.range(0, headers.size())
-        .filter(id -> headers.get(id).getText().equals(columnName))
-        .boxed()
-        .findFirst()
-        .orElseThrow(() -> new NoSuchElementException("Column '" + columnName + "' not found in the table"));
-  }
 
 }

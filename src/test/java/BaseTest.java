@@ -4,6 +4,7 @@ import java.util.stream.IntStream;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.testng.annotations.AfterClass;
@@ -14,7 +15,6 @@ public class BaseTest {
   protected WebDriver webDriver;
 
 
-
   @BeforeClass
   public void setUp() {
     initDriver();
@@ -22,9 +22,20 @@ public class BaseTest {
   }
 
   private void initDriver() {
-    FirefoxOptions options = new FirefoxOptions();
-    options.setBinary("C:\\Program Files\\Firefox Nightly\\firefox.exe");
-    webDriver = new FirefoxDriver(options);
+    webDriver = getWebDriver("Chrome");
+    //webDriver = getWebDriver("Firefox");
+  }
+
+  private WebDriver getWebDriver(String name) {
+    if ("Chrome".equals(name)) {
+      return new ChromeDriver();
+    }
+    if ("Firefox".equals(name)) {
+      FirefoxOptions options = new FirefoxOptions();
+      options.setBinary("C:\\Program Files\\Firefox Nightly\\firefox.exe");
+      return new FirefoxDriver(options);
+    } else
+      throw new IllegalArgumentException("Unknown browser name specified");
   }
 
   private void login() {
@@ -42,6 +53,7 @@ public class BaseTest {
         .findFirst()
         .orElseThrow(() -> new NoSuchElementException("Column '" + columnName + "' not found in the table"));
   }
+
   @AfterClass(alwaysRun = true)
   public void tearDown() {
     webDriver.get("http://localhost/litecart/admin/logout.php");

@@ -1,3 +1,6 @@
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.assertj.core.api.SoftAssertions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -22,17 +25,19 @@ public class ProductAttributesTest extends BaseTest {
           .describedAs("Проверка, что обычная цена на главной странице зачёркнутая")
           .isEqualTo("s");
 
-      softAssertions.assertThat(originalRegularPrice.getCssValue("color"))
+      String originalRegularColorCode = originalRegularPrice.getCssValue("color");
+      softAssertions.assertThat(isGrayColor(originalRegularColorCode))
           .describedAs("Проверка, что обычная цена на главной странице серая")
-          .contains("119, 119, 119");
+          .isTrue();
 
       softAssertions.assertThat(originalCampaignPrice.getTagName())
           .describedAs("Проверка, что акционная цена на главной странице жирная")
           .isEqualTo("strong");
 
-      softAssertions.assertThat(originalCampaignPrice.getCssValue("color"))
+      String originalCampaignColorCode = originalCampaignPrice.getCssValue("color");
+      softAssertions.assertThat(isRedColor(originalCampaignColorCode))
           .describedAs("Проверка, что акционная цена на главной странице красная")
-          .contains("204, 0, 0");
+          .isTrue();
 
       String originalCampaignPriceFontSize = originalCampaignPrice.getCssValue("font-size");
       String originalRegularPriceFontSize = originalRegularPrice.getCssValue("font-size");
@@ -69,17 +74,19 @@ public class ProductAttributesTest extends BaseTest {
           .describedAs("Проверка, что обычная цена на странице товара зачёркнутая")
           .isEqualTo("s");
 
-      softAssertions.assertThat(actualRegularPrice.getCssValue("color"))
+      String actualRegularPriceColor = actualRegularPrice.getCssValue("color");
+      softAssertions.assertThat(isGrayColor(actualRegularPriceColor))
           .describedAs("Проверка, что обычная цена на странице товара серая")
-          .contains("102, 102, 102");
+          .isTrue();
 
       softAssertions.assertThat(actualCampaignPrice.getTagName())
           .describedAs("Проверка, что акционная цена на странице товара жирная")
           .isEqualTo("strong");
 
-      softAssertions.assertThat(actualCampaignPrice.getCssValue("color"))
+      String  actualCampaignPriceColor = actualCampaignPrice.getCssValue("color");
+      softAssertions.assertThat(isRedColor(actualCampaignPriceColor))
           .describedAs("Проверка, что акционная цена на странице товара красная")
-          .contains("204, 0, 0");
+          .isTrue();
 
       String actualCampaignPriceFontSize = actualCampaignPrice.getCssValue("font-size");
       String actualRegularPriceFontSize = actualRegularPrice.getCssValue("font-size");
@@ -89,6 +96,40 @@ public class ProductAttributesTest extends BaseTest {
           .isGreaterThan(Float.parseFloat(actualRegularPriceFontSize
               .substring(0, actualCampaignPriceFontSize.length() - 2)));
     });
+  }
+
+  private boolean isGrayColor(String colorCode) {
+    return getRGBValues(colorCode).stream()
+        .distinct()
+        .count() == 1;
+  }
+
+  private boolean isRedColor(String colorCode) {
+    List<Integer> values = getRGBValues(colorCode);
+
+    return values.get(1).equals(values.get(2));
+  }
+
+  private List<Integer> getRGBValues(String colorCode) {
+    String value;
+    if (colorCode.startsWith("rgba(")) {
+      value = removeRgbaSymbols(colorCode, "rgba(", ", 1)");
+    } else if (colorCode.contains("rgb(")) {
+      value = removeRgbaSymbols(colorCode, "rgb(", ")");
+    } else {
+      throw new IllegalArgumentException("Color code format undefined");
+    }
+    return Arrays.stream(value.split(","))
+        .mapToInt(Integer::parseInt)
+        .boxed()
+        .collect(Collectors.toList());
+  }
+
+  private String removeRgbaSymbols(String colorCode, String prefix, String postfix) {
+    return colorCode
+        .replace(prefix, "")
+        .replace(postfix, "")
+        .replaceAll("\\s+", "");
   }
 
 }

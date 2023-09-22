@@ -23,7 +23,6 @@ public class BaseTest {
 
   private void initDriver() {
     webDriver = getWebDriver("Chrome");
-    //webDriver = getWebDriver("Firefox");
   }
 
   private WebDriver getWebDriver(String name) {

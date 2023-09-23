@@ -1,3 +1,4 @@
+import java.time.Duration;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.IntStream;
@@ -7,13 +8,14 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 
 public class BaseTest {
 
   protected WebDriver webDriver;
-
+  protected WebDriverWait wait;
 
   @BeforeClass
   public void setUp() {
@@ -23,6 +25,7 @@ public class BaseTest {
 
   private void initDriver() {
     webDriver = getWebDriver("Chrome");
+    wait = new WebDriverWait(webDriver, Duration.ofSeconds(10));
   }
 
   private WebDriver getWebDriver(String name) {
@@ -53,6 +56,15 @@ public class BaseTest {
         .orElseThrow(() -> new NoSuchElementException("Column '" + columnName + "' not found in the table"));
   }
 
+  boolean isElementPresented(By locator) {
+    try {
+      webDriver.findElement(locator);
+      return true;
+    }
+    catch (org.openqa.selenium.NoSuchElementException ex) {
+      return false;
+    }
+  }
   @AfterClass(alwaysRun = true)
   public void tearDown() {
     webDriver.get("http://localhost/litecart/admin/logout.php");

@@ -7,16 +7,18 @@ import org.testng.annotations.Test;
 
 public class ShoppingCartTests extends BaseTest {
 
+  private static final int PRODUCT_COUNT = 3;
+
   @Test
   public void addProductToCart() {
     webDriver.findElement(By.xpath("//*[@title='Catalog']")).click();
-    int productCount = 3;
-    for (int i =0; i < productCount; i++) {
+    for (int i = 0; i < PRODUCT_COUNT; i++) {
       addProduct();
       webDriver.findElement(By.xpath("//*[@title='Home']")).click();
     }
     webDriver.get("http://localhost/litecart/en/checkout");
-    for (int i=0; i< productCount; i++) {
+    int shortcutCount = webDriver.findElements(By.className("shortcut")).size();
+    for (int i = 0; i < shortcutCount; i++) {
       removeProduct();
     }
   }

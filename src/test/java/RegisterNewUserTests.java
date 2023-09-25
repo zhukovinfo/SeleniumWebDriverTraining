@@ -1,3 +1,4 @@
+import java.util.NoSuchElementException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
@@ -27,7 +28,12 @@ public class RegisterNewUserTests extends BaseTest {
     webDriver.findElement(By.name("address2")).sendKeys("New Bru city, Secondary str., 9-10");
     webDriver.findElement(By.name("postcode")).sendKeys("44455");
     webDriver.findElement(By.name("city")).sendKeys("New Moscow");
-    new Select(webDriver.findElement(By.name("country_code"))).selectByVisibleText("United States");
+    webDriver.findElement(By.className("select2-selection__rendered")).click();
+    webDriver.findElements(By.className("select2-results__option")).stream()
+        .filter(element -> element.getText().equals("United States"))
+        .findFirst()
+        .orElseThrow(() -> new NoSuchElementException("No option United States found"))
+        .click();
     new Select(webDriver.findElement(By.cssSelector("select[name='zone_code']"))).selectByVisibleText("Alaska");
     webDriver.findElement(By.name("email")).sendKeys(email);
     webDriver.findElement(By.name("phone")).sendKeys("+19870123456");

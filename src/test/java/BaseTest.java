@@ -8,6 +8,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -24,15 +25,17 @@ public class BaseTest {
   }
 
   private void initDriver() {
-    webDriver = getWebDriver("Chrome");
+    //String browserName = Browser.CHROME.browserName();
+    String browserName = Browser.FIREFOX.browserName();
+    webDriver = getWebDriver(browserName);
     wait = new WebDriverWait(webDriver, Duration.ofSeconds(10));
   }
 
   private WebDriver getWebDriver(String name) {
-    if ("Chrome".equals(name)) {
+    if (Browser.CHROME.browserName().equals(name)) {
       return new ChromeDriver();
     }
-    if ("Firefox".equals(name)) {
+    if (Browser.FIREFOX.browserName().equals(name)) {
       FirefoxOptions options = new FirefoxOptions();
       options.setBinary("C:\\Program Files\\Firefox Nightly\\firefox.exe");
       return new FirefoxDriver(options);

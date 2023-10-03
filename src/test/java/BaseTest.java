@@ -25,8 +25,8 @@ public class BaseTest {
   }
 
   private void initDriver() {
-    //String browserName = Browser.CHROME.browserName();
-    String browserName = Browser.FIREFOX.browserName();
+    String browserName = Browser.CHROME.browserName();
+    //String browserName = Browser.FIREFOX.browserName();
     webDriver = getWebDriver(browserName);
     wait = new WebDriverWait(webDriver, Duration.ofSeconds(10));
   }

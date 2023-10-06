@@ -20,6 +20,7 @@ public class BrowserLogsTests extends BaseTest {
           .click();
 
       List<LogEntry> logs = webDriver.manage().logs().get("browser").getAll();
+      logs.forEach(System.out::println);
       assertThat(logs.size())
           .describedAs("Проверка, что в логе браузера нет сообщений (любого уровня)")
           .isEqualTo(0);

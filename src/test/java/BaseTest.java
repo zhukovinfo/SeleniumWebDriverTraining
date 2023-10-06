@@ -1,13 +1,16 @@
 import java.time.Duration;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.logging.Level;
 import java.util.stream.IntStream;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterClass;
@@ -33,7 +36,11 @@ public class BaseTest {
 
   private WebDriver getWebDriver(String name) {
     if (Browser.CHROME.browserName().equals(name)) {
-      return new ChromeDriver();
+      LoggingPreferences loggingPreferences = new LoggingPreferences();
+      loggingPreferences.enable("browser", Level.ALL);
+      ChromeOptions chromeOptions = new ChromeOptions();
+      chromeOptions.setCapability("goog:loggingPrefs", loggingPreferences);
+      return new ChromeDriver(chromeOptions);
     }
     if (Browser.FIREFOX.browserName().equals(name)) {
       FirefoxOptions options = new FirefoxOptions();

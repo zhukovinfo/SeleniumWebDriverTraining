@@ -1,3 +1,5 @@
+package com.zhukov.training;
+
 import java.net.MalformedURLException;
 import java.net.URI;
 import org.openqa.selenium.WebDriver;

@@ -1,3 +1,5 @@
+package com.zhukov.training;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -36,7 +38,7 @@ public class ShoppingCartTests extends BaseTest {
     webDriver.findElement(By.name("add_cart_product")).click();
     wait.until(ExpectedConditions.textToBePresentInElement(webDriver.findElement(By.className("quantity")),
         String.valueOf(counter + 1)));
-  }
+  }//table[contains(@class,'dataTable')]
 
   private void removeProduct() {
     WebElement table = webDriver.findElement(By.xpath("//table[contains(@class,'dataTable')]"));

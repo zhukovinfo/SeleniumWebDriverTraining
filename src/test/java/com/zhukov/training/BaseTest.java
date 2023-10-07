@@ -1,3 +1,5 @@
+package com.zhukov.training;
+
 import java.time.Duration;
 import java.util.List;
 import java.util.NoSuchElementException;

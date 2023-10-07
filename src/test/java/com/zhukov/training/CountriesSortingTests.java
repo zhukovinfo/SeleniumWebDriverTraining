@@ -1,3 +1,5 @@
+package com.zhukov.training;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import org.assertj.core.api.SoftAssertions;

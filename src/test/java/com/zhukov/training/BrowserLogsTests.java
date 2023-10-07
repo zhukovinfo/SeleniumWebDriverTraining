@@ -1,3 +1,5 @@
+package com.zhukov.training;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import java.util.List;
